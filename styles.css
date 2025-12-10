@@ -2335,13 +2335,29 @@ h3 {
     }
     
     .hero-stats {
-        flex-direction: column;
-        gap: 20px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px 24px;
+        padding-top: 30px;
+        margin-top: 40px;
+    }
+    
+    .hero-stats .stat {
+        text-align: center;
+        min-width: 70px;
+    }
+    
+    .hero-stats .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .hero-stats .stat-label {
+        font-size: 0.7rem;
     }
     
     .stat-divider {
-        width: 60px;
-        height: 1px;
+        display: none;
     }
     
     .trust-item {
