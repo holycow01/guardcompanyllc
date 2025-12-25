@@ -1585,6 +1585,38 @@ h3 {
     background: rgba(201, 162, 39, 0.05);
 }
 
+/* Inline field errors */
+.field-error {
+    display: block;
+    color: #ef4444;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    min-height: 0;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.2s ease;
+}
+
+.field-error.visible {
+    opacity: 1;
+    transform: translateY(0);
+    min-height: 1.2em;
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.form-group input.error:focus,
+.form-group select.error:focus,
+.form-group textarea.error:focus {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
+}
+
 .form-group select {
     cursor: pointer;
     appearance: none;

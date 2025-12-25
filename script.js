@@ -64,6 +64,158 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// ===== Email Validation =====
+function validateEmail(email) {
+    email = email.toLowerCase().trim();
+    
+    // Basic format check (stricter regex)
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    if (!emailRegex.test(email)) {
+        return 'Please enter a valid email address.';
+    }
+    
+    const [localPart, domain] = email.split('@');
+    const domainParts = domain.split('.');
+    const tld = domainParts[domainParts.length - 1];
+    
+    // Check minimum lengths
+    if (localPart.length < 2) {
+        return 'Email address seems too short.';
+    }
+    if (tld.length < 2) {
+        return 'Please enter a valid email domain.';
+    }
+    
+    // Block disposable/temporary email domains
+    const disposableDomains = [
+        'tempmail.com', 'throwaway.email', 'guerrillamail.com', 'mailinator.com',
+        'temp-mail.org', '10minutemail.com', 'fakeinbox.com', 'trashmail.com',
+        'yopmail.com', 'getnada.com', 'maildrop.cc', 'dispostable.com',
+        'mailnesia.com', 'tempr.email', 'discard.email', 'tmpmail.org',
+        'tmpmail.net', 'mohmal.com', 'tempail.com', 'emailondeck.com',
+        'temp.email', 'spamgourmet.com', 'mintemail.com', 'tempinbox.com',
+        'sharklasers.com', 'spam4.me', 'grr.la', 'guerrillamailblock.com',
+        'pokemail.net', 'emlpro.com', 'crazymailing.com', 'mailcatch.com'
+    ];
+    if (disposableDomains.includes(domain)) {
+        return 'Please use a permanent email address, not a temporary one.';
+    }
+    
+    // Common typo corrections for popular domains
+    const typoMap = {
+        'gmial.com': 'gmail.com', 'gmal.com': 'gmail.com', 'gamil.com': 'gmail.com',
+        'gnail.com': 'gmail.com', 'gmail.co': 'gmail.com', 'gmaill.com': 'gmail.com',
+        'hotmal.com': 'hotmail.com', 'hotmai.com': 'hotmail.com', 'hotmial.com': 'hotmail.com',
+        'homail.com': 'hotmail.com', 'hotmail.co': 'hotmail.com',
+        'yahooo.com': 'yahoo.com', 'yaho.com': 'yahoo.com', 'tahoo.com': 'yahoo.com',
+        'uahoo.com': 'yahoo.com', 'yahoo.co': 'yahoo.com',
+        'outloo.com': 'outlook.com', 'outlok.com': 'outlook.com', 'outlookk.com': 'outlook.com',
+        'iclod.com': 'icloud.com', 'icoud.com': 'icloud.com', 'icloud.co': 'icloud.com'
+    };
+    if (typoMap[domain]) {
+        return `Did you mean ${localPart}@${typoMap[domain]}?`;
+    }
+    
+    // Block obviously fake TLDs
+    const fakeTLDs = ['fake', 'test', 'invalid', 'example', 'asdf', 'qwerty', 'abc', 'xyz123'];
+    if (fakeTLDs.includes(tld) || /^\d+$/.test(tld)) {
+        return 'Please enter a real email address.';
+    }
+    
+    // Block repeated characters (like aaa@aaa.aaa)
+    if (/^(.)\1+$/.test(localPart) || /^(.)\1+$/.test(domainParts[0])) {
+        return 'Please enter a valid email address.';
+    }
+    
+    return null; // Email is valid
+}
+
+// ===== Area Code Validation =====
+function validateAreaCode(areaCode) {
+    // Valid North American area codes (US & Canada)
+    // This list includes all active NANP area codes
+    const validAreaCodes = [
+        // US Area Codes
+        '201','202','203','205','206','207','208','209','210','212','213','214','215','216','217','218','219',
+        '220','223','224','225','228','229','231','234','239','240','248','251','252','253','254','256','260',
+        '262','267','269','270','272','274','276','281','283','301','302','303','304','305','307','308','309',
+        '310','312','313','314','315','316','317','318','319','320','321','323','325','326','327','330','331',
+        '332','334','336','337','339','340','341','346','347','351','352','360','361','364','369','380','385',
+        '386','401','402','404','405','406','407','408','409','410','412','413','414','415','417','419','423',
+        '424','425','430','432','434','435','440','442','443','445','447','458','463','469','470','475','478',
+        '479','480','484','501','502','503','504','505','507','508','509','510','512','513','515','516','517',
+        '518','520','530','531','534','539','540','541','551','559','561','562','563','564','567','570','571',
+        '573','574','575','580','585','586','601','602','603','605','606','607','608','609','610','612','614',
+        '615','616','617','618','619','620','623','626','628','629','630','631','636','641','646','650','651',
+        '657','659','660','661','662','667','669','678','680','681','682','689','701','702','703','704','706',
+        '707','708','712','713','714','715','716','717','718','719','720','724','725','726','727','731','732',
+        '734','737','740','743','747','754','757','760','762','763','764','765','769','770','772','773','774',
+        '775','779','781','785','786','801','802','803','804','805','806','808','810','812','813','814','815',
+        '816','817','818','820','828','830','831','832','835','838','839','840','843','845','847','848','850',
+        '854','856','857','858','859','860','862','863','864','865','870','872','878','901','903','904','906',
+        '907','908','909','910','912','913','914','915','916','917','918','919','920','925','928','929','930',
+        '931','934','936','937','938','940','941','943','945','947','949','951','952','954','956','959','970',
+        '971','972','973','975','978','979','980','984','985','986','989',
+        // Canada Area Codes
+        '204','226','236','249','250','289','306','343','365','403','416','418','431','437','438','450','506',
+        '514','519','548','579','581','587','604','613','639','647','672','705','709','778','780','782','807',
+        '819','825','867','873','902','905',
+        // US Territories
+        '340','670','671','684','787','939','868'
+    ];
+    
+    // Check if area code starts with 0 or 1 (invalid in NANP)
+    if (areaCode.startsWith('0') || areaCode.startsWith('1')) {
+        return 'Area code cannot start with 0 or 1. Please check your number.';
+    }
+    
+    // Check if area code is valid
+    if (!validAreaCodes.includes(areaCode)) {
+        return `Area code (${areaCode}) is not valid. Please check your phone number.`;
+    }
+    
+    return null; // Area code is valid
+}
+
+// ===== Inline Field Error Functions =====
+function showFieldError(fieldName, message) {
+    const input = document.getElementById(fieldName);
+    const errorSpan = document.getElementById(`${fieldName}-error`);
+    
+    if (input) {
+        input.classList.add('error');
+    }
+    if (errorSpan) {
+        errorSpan.textContent = message;
+        errorSpan.classList.add('visible');
+    }
+}
+
+function clearFieldErrors() {
+    // Clear all error states
+    const errorInputs = document.querySelectorAll('.form-group input.error, .form-group select.error, .form-group textarea.error');
+    errorInputs.forEach(input => input.classList.remove('error'));
+    
+    // Clear all error messages
+    const errorSpans = document.querySelectorAll('.field-error');
+    errorSpans.forEach(span => {
+        span.textContent = '';
+        span.classList.remove('visible');
+    });
+}
+
+// Clear error on input focus
+document.querySelectorAll('#contactForm input, #contactForm select, #contactForm textarea').forEach(field => {
+    field.addEventListener('focus', function() {
+        this.classList.remove('error');
+        const errorSpan = document.getElementById(`${this.id}-error`);
+        if (errorSpan) {
+            errorSpan.textContent = '';
+            errorSpan.classList.remove('visible');
+        }
+    });
+});
+
 // ===== Contact Form Handling =====
 contactForm.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -75,16 +227,55 @@ contactForm.addEventListener('submit', function(e) {
         data[key] = value;
     });
     
-    // Validate required fields
-    if (!data.name || !data.email || !data.phone) {
-        showNotification('Please fill in all required fields.', 'error');
-        return;
+    // Clear previous errors
+    clearFieldErrors();
+    
+    // Collect all validation errors
+    let hasErrors = false;
+    
+    // Name validation
+    const nameClean = data.name ? data.name.trim() : '';
+    if (!nameClean) {
+        showFieldError('name', 'Full name is required.');
+        hasErrors = true;
+    } else if (nameClean.length < 3) {
+        showFieldError('name', 'Name must be at least 3 characters.');
+        hasErrors = true;
+    } else if (/\d/.test(nameClean)) {
+        showFieldError('name', 'Name should not contain numbers.');
+        hasErrors = true;
     }
     
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-        showNotification('Please enter a valid email address.', 'error');
+    if (!data.email) {
+        showFieldError('email', 'Email is required.');
+        hasErrors = true;
+    } else {
+        const emailError = validateEmail(data.email);
+        if (emailError) {
+            showFieldError('email', emailError);
+            hasErrors = true;
+        }
+    }
+    
+    // Phone validation
+    const phoneDigits = data.phone ? data.phone.replace(/\D/g, '') : '';
+    if (!phoneDigits) {
+        showFieldError('phone', 'Phone number is required.');
+        hasErrors = true;
+    } else if (phoneDigits.length < 10) {
+        showFieldError('phone', 'Enter a complete 10-digit number.');
+        hasErrors = true;
+    } else {
+        const areaCodeError = validateAreaCode(phoneDigits.substring(0, 3));
+        if (areaCodeError) {
+            showFieldError('phone', areaCodeError);
+            hasErrors = true;
+        }
+    }
+    
+    // Stop if there are errors
+    if (hasErrors) {
         return;
     }
     
@@ -94,22 +285,51 @@ contactForm.addEventListener('submit', function(e) {
     submitBtn.innerHTML = '<span>Sending...</span>';
     submitBtn.disabled = true;
     
-    // Simulate form submission (replace with actual API call)
-    setTimeout(() => {
-        // Success
-        showNotification('Thank you! We\'ll contact you within 24 hours.', 'success');
-        this.reset();
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        
-        // Track conversion (for analytics)
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'form_submission', {
-                'event_category': 'lead',
-                'event_label': 'contact_form'
+    // ====== FORMSPREE CONFIGURATION ======
+    // Replace 'YOUR_FORMSPREE_ID' with your actual Formspree form ID
+    // Get your ID at: https://formspree.io (create account → new form → copy ID)
+    const FORMSPREE_ID = 'maqwgokp';
+    const FORMSPREE_URL = `https://formspree.io/f/${FORMSPREE_ID}`;
+    // =====================================
+    
+    // Send to Formspree
+    fetch(FORMSPREE_URL, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            // Success
+            showNotification('Thank you! We\'ll contact you within 24 hours.', 'success');
+            this.reset();
+            
+            // Track conversion (for analytics)
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'form_submission', {
+                    'event_category': 'lead',
+                    'event_label': 'contact_form'
+                });
+            }
+        } else {
+            response.json().then(data => {
+                if (data.errors) {
+                    showNotification(data.errors.map(e => e.message).join(', '), 'error');
+                } else {
+                    showNotification('Oops! There was a problem. Please try again.', 'error');
+                }
             });
         }
-    }, 1500);
+    })
+    .catch(error => {
+        showNotification('Network error. Please check your connection.', 'error');
+    })
+    .finally(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
 });
 
 // ===== Notification System =====
@@ -284,16 +504,51 @@ document.head.appendChild(animationStyles);
 const phoneInput = document.getElementById('phone');
 if (phoneInput) {
     phoneInput.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length >= 10) {
-            value = value.substring(0, 10);
-            value = `(${value.substring(0, 3)}) ${value.substring(3, 6)}-${value.substring(6)}`;
-        } else if (value.length >= 6) {
-            value = `(${value.substring(0, 3)}) ${value.substring(3, 6)}-${value.substring(6)}`;
-        } else if (value.length >= 3) {
-            value = `(${value.substring(0, 3)}) ${value.substring(3)}`;
+        const input = e.target;
+        const selectionStart = input.selectionStart;
+        const previousValue = input.value;
+        
+        // Get only digits
+        let digits = input.value.replace(/\D/g, '');
+        
+        // Limit to 10 digits
+        if (digits.length > 10) {
+            digits = digits.substring(0, 10);
         }
-        e.target.value = value;
+        
+        // Format based on digit count
+        let formatted = '';
+        if (digits.length === 0) {
+            formatted = '';
+        } else if (digits.length < 3) {
+            formatted = `(${digits}`;
+        } else if (digits.length === 3) {
+            formatted = `(${digits})`;
+        } else if (digits.length <= 6) {
+            formatted = `(${digits.substring(0, 3)}) ${digits.substring(3)}`;
+        } else {
+            formatted = `(${digits.substring(0, 3)}) ${digits.substring(3, 6)}-${digits.substring(6)}`;
+        }
+        
+        // Only update if value changed (prevents cursor jump on backspace)
+        if (formatted !== previousValue) {
+            input.value = formatted;
+            
+            // Restore cursor position intelligently
+            if (e.inputType === 'deleteContentBackward') {
+                // On backspace, put cursor where it was minus formatting chars removed
+                const digitsBeforeCursor = previousValue.substring(0, selectionStart).replace(/\D/g, '').length;
+                let newPosition = 0;
+                let digitCount = 0;
+                for (let i = 0; i < formatted.length && digitCount < digitsBeforeCursor; i++) {
+                    if (/\d/.test(formatted[i])) {
+                        digitCount++;
+                    }
+                    newPosition = i + 1;
+                }
+                input.setSelectionRange(newPosition, newPosition);
+            }
+        }
     });
 }
 
