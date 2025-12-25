@@ -29,15 +29,17 @@
         </div>
     </nav>
 
+    <!-- Floating Back Button -->
+    <a href="blog.html" class="floating-back" id="floatingBack">
+        <svg viewBox="0 0 24 24" fill="none">
+            <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back to Blogs
+    </a>
+
     <article class="blog-post">
         <div class="container">
             <header class="blog-post-header">
-                <a href="blog.html" class="back-link">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Back to Blogs
-                </a>
                 <span class="blog-category">Hospitality</span>
                 <h1>Hotel Security Best Practices: Keeping Guests Safe and Satisfied</h1>
                 <div class="blog-post-meta">
@@ -153,7 +155,25 @@
             </div>
         </div>
     </footer>
-    <script>const mobileToggle=document.getElementById('mobileToggle'),navLinks=document.getElementById('navLinks');mobileToggle.addEventListener('click',()=>{mobileToggle.classList.toggle('active');navLinks.classList.toggle('active');});</script>
+    <script>
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+        mobileToggle.addEventListener('click', () => {
+            mobileToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+        
+        // Floating back button - shows once scrolled down, stays visible permanently
+        const floatingBack = document.getElementById('floatingBack');
+        let backButtonShown = false;
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300 && !backButtonShown) {
+                floatingBack.classList.add('visible');
+                backButtonShown = true;
+            }
+        });
+    </script>
 </body>
 </html>
 
